@@ -1,7 +1,6 @@
 import os
 import re
 from PyPDF2 import PdfReader, PdfWriter
-from groq import Groq
 
 # Caminho para as pastas
 folder = 'C:\\Users\\ryane\\OneDrive\\Área de Trabalho\\NF`s'
@@ -13,55 +12,43 @@ codigos_especificos = [
     '34500', '34501', '34502', '34503', '34505', '34506', '34507',
     '34508', '34510', '34512', '34513', '35475', '46828', '35975'
 ]
+# Função para extrair a data de emissão do texto
+def extrair_data_emissao(texto):
+    # Regex para encontrar a data antes de "Data da emissão"
+    match = re.search(r'RS\s*(\d{2}-\d{2}-\d{4})', texto)
+    return match.group(1) if match else 'data_desconhecida'
 
-# Inicializa o cliente da Groq com a chave da API
-client = Groq(api_key=os.environ.get(""))
-
-# Função para fazer a requisição à IA da Groq
-def fazer_requisicao(texto):
-    messages = [{"role": "user", "content": texto}]
-    chat_completion = client.chat.completions.create(
-        messages=messages,
-        model="llama3-8b-8192",
-    )
-    return chat_completion.choices[0].message.content
+# Função para gerar um nome de arquivo único
+def gerar_nome_unico(nome_base):
+    indice = 1
+    nome = nome_base
+    while os.path.exists(nome):
+        nome = f"{nome_base}({indice})"
+        indice += 1
+    return nome
 
 # Função para extrair informações específicas do PDF
 def extrair_informacoes(caminho_pdf):
-    global data_emissao
     leitor = PdfReader(caminho_pdf)
     writer_pdf = PdfWriter()
-    respostas = []
+    data_emissao = 'data_desconhecida'
 
     for i, pagina in enumerate(leitor.pages):
         texto = pagina.extract_text()
-
-        if any(codigo in texto for codigo in codigos_especificos):
+        if any(codigos in texto for codigos in codigos_especificos):
             writer_pdf.add_page(pagina)
-
-            # Fazer requisição à IA da Groq
-            instrucoes = (
-                "Você irá ler esse pdf e identificar a data de emissão,e deve retornar como resposta a apenas a data "
-            )
-            texto_completo = f"{instrucoes}\n\n{texto}"
-            resposta = fazer_requisicao(texto_completo)
-            respostas.append(resposta)
+            # Tenta extrair a data de emissão do texto
+            data_extraida = extrair_data_emissao(texto)
+            if data_extraida != 'data_desconhecida':
+                data_emissao = data_extraida
 
     # Salvar todas as páginas em um único arquivo PDF
     if len(writer_pdf.pages) > 0:
-        # Extraindo a data de emissão da primeira resposta
-        data_emissao = extrair_data_emissao(respostas[0])
-        data_emissao_formatada = data_emissao.replace('/', '-')  # Substituir / por -
-        nome_pdf_final = os.path.join(folder, f'ASUN NF_{data_emissao_formatada}.pdf')
+        nome_pdf_base = os.path.join(folder, f'ASUN NF_{data_emissao}.pdf')
+        nome_pdf_final = gerar_nome_unico(nome_pdf_base)
         with open(nome_pdf_final, 'wb') as novo_pdf:
             writer_pdf.write(novo_pdf)
         print(f'Todas as páginas salvas como {nome_pdf_final}')
-
-# Função para extrair a data de emissão a partir da resposta
-def extrair_data_emissao(resposta):
-    # Regex para capturar a data no formato DD/MM/YYYY
-    match = re.search(r'\d{2}/\d{2}/\d{4}', resposta)
-    return match.group(0) if match else 'data_desconhecida'
 
 # Processar todos os arquivos PDF na pasta de origem
 for arquivo in os.listdir(folder):
