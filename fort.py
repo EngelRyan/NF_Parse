@@ -10,7 +10,7 @@ folder = 'C:\\Users\\ryane\\OneDrive\\Área de Trabalho\\NF`s'
 codigos_especificos = ['41867', '45999', '41868']
 
 # Inicializa o cliente da Groq com a chave da API
-client = Groq(api_key=os.environ.get("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"))
+client = Groq(api_key=os.environ.get(""))
 
 # Função para fazer a requisição à IA da Groq
 def fazer_requisicao(texto):
