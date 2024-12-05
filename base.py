@@ -3,7 +3,7 @@ import re
 from PyPDF2 import PdfReader, PdfWriter
 
 # Path to the folders
-folder = 'C:\\Users\\Estudante\\Desktop\\SheetParseFlow\\Main\\nfs'
+folder = 'C:\\Users\\ryane\\OneDrive\\Área de Trabalho\\NFS'
 
 # Function to extract the issue date from the text
 def extract_issue_date(text):
@@ -85,6 +85,8 @@ def extract_all_occurrences(name, codes, pdf_path):
             if code in text:
 
                 writer.add_page(page)
-                issue_date = extract_issue_date(text)
+
+                if issue_date == 'unknown_date':
+                    issue_date = extract_issue_date(text)
 
     save_pdf(writer, name, issue_date)

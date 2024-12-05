@@ -2,10 +2,9 @@ from base import extract_first_occurrence, extract_all_occurrences
 import os
 from PyPDF2 import PdfReader, PdfWriter
 
-
 def main():
     
-    folder = 'C:\\Users\\Estudante\\Desktop\\SheetParseFlow\\Main\\nfs'
+    folder = 'C:\\Users\\ryane\\OneDrive\\Área de Trabalho\\NFS'
 
     # List of specific codes for STOK
     stok_codes = ['42795', '31716', '31717', '31719', '31721', '43200', '43199', '54670', '31712']
@@ -21,13 +20,16 @@ def main():
         '34508', '34510', '34512', '34513', '35475', '46828', '35975'
     ]
 
+    atacadao_codes= ['37400','37401','37410','37514','31497','31536','37416']
+
    
     # Extract only the first occurrence for each category
     for file in os.listdir(folder):
         pdf_path = os.path.join(folder, file)
-        extract_first_occurrence('STOK', stok_codes, pdf_path)
-        extract_first_occurrence('FORT', fort_codes, pdf_path)
-        extract_first_occurrence('ASUN', asun_codes, pdf_path)
+        extract_all_occurrences('STOK', stok_codes, pdf_path)
+        extract_all_occurrences('FORT', fort_codes, pdf_path)
+        extract_all_occurrences('ASUN', asun_codes, pdf_path)
+        extract_all_occurrences('ATACADAO', atacadao_codes, pdf_path)
 
 if __name__ == '__main__':
     main()
