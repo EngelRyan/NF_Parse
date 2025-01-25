@@ -10,7 +10,7 @@ def main():
     stok_codes = ['42795', '31716', '31717', '31719', '31721', '43200', '43199', '54670', '31712']
 
     # List of specific codes for FORT
-    fort_codes = ['41867', '45999', '41868']
+    fort_codes = ['41867', '45999', '41868','55660']
 
     # List of specific codes for ASUN
     asun_codes = [
