@@ -43,6 +43,10 @@ def save_pdf(writer, name, issue_date):
 # Function to extract only the first occurrence of specified codes from the PDF
 def extract_first_occurrence(name, codes, pdf_path):
 
+    if not pdf_path.lower().endswith('.pdf'):  # Check if it's a PDF
+        print(f"Skipping {pdf_path} (not a PDF)")
+        return
+
     reader = PdfReader(pdf_path)
     found_notes = set()  # Set to store already found codes
 
@@ -60,22 +64,25 @@ def extract_first_occurrence(name, codes, pdf_path):
 
                 writer = PdfWriter()
                 writer.add_page(page)
-                found_notes.add(match)  
+                found_notes.add(match)
                 issue_date = extract_issue_date(text)
 
                 save_pdf(writer, name, issue_date)
 
-                break  
+                break
 
     save_pdf(writer, name, issue_date)
 
 # Function to extract all occurrences of specified codes from the PDF
 def extract_all_occurrences(name, codes, pdf_path):
 
+    if not pdf_path.lower().endswith('.pdf'):  # Check if it's a PDF
+        print(f"Skipping {pdf_path} (not a PDF)")
+        return
+
     reader = PdfReader(pdf_path)
     writer = PdfWriter()
-    issue_date = 'unknown_date'  
-
+    issue_date = 'unknown_date'
 
     for page in reader.pages:
         text = page.extract_text()
