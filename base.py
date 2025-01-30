@@ -3,7 +3,7 @@ import re
 from PyPDF2 import PdfReader, PdfWriter
 
 # Path to the folders
-folder = 'C:\\Users\\ryane\\OneDrive\\Área de Trabalho\\NFS'
+folder = 'C:\\Users\\Windows 10 Pro\\OneDrive\\Área de Trabalho\\NFS'
 
 # Function to extract the issue date from the text
 def extract_issue_date(text):

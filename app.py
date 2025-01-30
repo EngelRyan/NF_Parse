@@ -3,8 +3,8 @@ import os
 from PyPDF2 import PdfReader, PdfWriter
 
 def main():
-    
-    folder = 'C:\\Users\\ryane\\OneDrive\\Área de Trabalho\\NFS'
+
+    folder = 'C:\\Users\\Windows 10 Pro\\OneDrive\\Área de Trabalho\\NFS'
 
     # List of specific codes for STOK
     stok_codes = ['42795', '31716', '31717', '31719', '31721', '43200', '43199', '54670', '31712']

@@ -5,7 +5,7 @@ from io import BytesIO  # Para trabalhar com arquivos em memória
 from PyPDF2 import PdfMerger  # Para juntar os PDFs
 
 # Caminho da pasta onde os arquivos estão
-folder = 'C:\\Users\\ryane\\OneDrive\\Área de Trabalho\\NFS'
+folder = 'C:\\Users\\Windows 10 Pro\\OneDrive\\Área de Trabalho\\NFS'
 
 # Dicionário de clientes e seus respectivos mercados
 clientes_mercado = {
