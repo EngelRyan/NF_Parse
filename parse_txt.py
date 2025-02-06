@@ -1,8 +1,8 @@
 import os
 import re
 import requests
-from io import BytesIO  # Para trabalhar com arquivos em memória
-from PyPDF2 import PdfMerger  # Para juntar os PDFs
+from io import BytesIO
+from PyPDF2 import PdfMerger
 
 # Caminho da pasta onde os arquivos estão
 folder = 'C:\\Users\\Windows 10 Pro\\OneDrive\\Área de Trabalho\\NFS'
@@ -48,7 +48,7 @@ clientes_mercado = {
     '43199': 'COMERCIAL ZAFFARI 42',
     '31712': 'COMERCIAL ZAFFARI 85',
     '54670': 'COMERCIAL ZAFFARI 51',
-    # Mercados ATACADO, BIG e WAL MART (tudo junto na mesma categoria)
+    # Mercados ATACADO, BIG e WAL MART
     '37400': 'ATACADÃO PORTO ALEGRE SERTORIO',
     '37401': 'ATACADÃO GRAVATAI',
     '37514': 'ATACADÃO PELOTAS',
@@ -67,11 +67,11 @@ categorias = {
 }
 
 def extrair_dados(mensagem):
+
     numero_nota_regex = r"Nota Fiscal: (\d+)"
     valor_regex = r"Valor: ([\d,\.]+)"
     cliente_regex = r"Cliente: (\d{5}-[A-Z]+)"
-    link_regex = r"Link da nota: (https?://[^\s]+)"
-
+    link_regex = r"Link da nota: (https?://[^\s]+\.pdf)"
     numero_nota = re.search(numero_nota_regex, mensagem)
     valor = re.search(valor_regex, mensagem)
     cliente = re.search(cliente_regex, mensagem)
@@ -85,10 +85,11 @@ def extrair_dados(mensagem):
     }
 
 def processar_arquivo(txt_path):
+
     with open(txt_path, 'r', encoding='utf-8') as file:
         texto = file.read()
 
-    mensagens = texto.split('\n\n')  # Separar mensagens por duas quebras de linha
+    mensagens = texto.split('\n\n')
 
     for mensagem in mensagens:
         dados = extrair_dados(mensagem)
@@ -99,7 +100,7 @@ def processar_arquivo(txt_path):
         if numero_cliente in clientes_mercado:
             if "ASUN" in nome_mercado:
                 categorias["ASUN"].append(mensagem)
-            elif "FORT" in nome_mercado:
+            elif "FORT" in nome_mercado or "FORTE" in nome_mercado:
                 categorias["FORT"].append(mensagem)
             elif "STOCK" in nome_mercado or "ZAFFARI" in nome_mercado:
                 categorias["STOK"].append(mensagem)
@@ -115,6 +116,7 @@ def salvar_em_arquivos():
                     file.write(mensagem + '\n\n')
             print(f"Arquivo {categoria}_NF_.txt criado com sucesso em {output_file}")
 
+
 def extrair_links_do_arquivo(txt_path):
     links = []
     with open(txt_path, 'r', encoding='utf-8') as file:
@@ -122,6 +124,9 @@ def extrair_links_do_arquivo(txt_path):
 
     link_regex = r"https?://[^\s]+"
     links = re.findall(link_regex, texto)
+
+    # Remover links que terminam com .xml
+    links = [link for link in links if not link.endswith('.xml')]
 
     return links
 
@@ -169,7 +174,6 @@ def baixar_todas_as_notas():
         baixar_e_juntar_notas(categoria)
 
 if __name__ == "__main__":
-    # Caminho do arquivo .txt contendo as mensagens
     txt_path = os.path.join(folder, "NOTAS.txt")
 
     processar_arquivo(txt_path)
